@@ -27,20 +27,30 @@ var total = 0;
 
 $(document).ready(function () {
 
+    // go ahead and get the most-accessed elements once and store them in a variable,
+    // so we don't have to make jQuery search for the elements multiple times
+    // otherwise this become extraordinarily unperformant
+    var prodPriceBananas = $('#bananas .prodPrice');
+    var prodPriceApples = $('#apples .prodPrice');
+    var prodPriceOranges = $('#oranges .prodPrice');
+    var quantityBananas = $('#bananas .qty');
+    var quantityApples = $('#apples .qty');
+    var quantityOranges = $('#oranges .qty');
+
     // initialize product pricing on page
-    $('#bananas .prodPrice').text("$" + BANANA_PRICE.toFixed(2));
-    $('#apples .prodPrice').text("$" + APPLE_PRICE.toFixed(2));
-    $('#oranges .prodPrice').text("$" + ORANGE_PRICE.toFixed(2));
+    prodPriceBananas.text("$" + BANANA_PRICE.toFixed(2));
+    prodPriceApples.text("$" + APPLE_PRICE.toFixed(2));
+    prodPriceOranges.text("$" + ORANGE_PRICE.toFixed(2));
 
     // initialize shopping cart with one of each
-    $('#bananas .qty').val(selectedBananas);
-    $('#apples .qty').val(selectedApples);
-    $('#oranges .qty').val(selectedOranges);
+    quantityBananas.val(selectedBananas);
+    quantityApples.val(selectedApples);
+    quantityOranges.val(selectedOranges);
 
     // dont let user select more than is available
-    $('#bananas .qty').prop("max", availableBananas);
-    $('#apples .qty').prop("max", availableApples);
-    $('#oranges .qty').prop("max", availableOranges);
+    quantityBananas.prop("max", availableBananas);
+    quantityApples.prop("max", availableApples);
+    quantityOranges.prop("max", availableOranges);
 
     // calculate initial totals
     updateProdTotal("#bananas", BANANA_PRICE);
@@ -49,22 +59,22 @@ $(document).ready(function () {
     updateTotals();
 
     // calculate at each update
-    $('#bananas .qty').on('change', function() {
-        selectedBananas =  $('#bananas .qty').val();
+    quantityBananas.on('change', function () {
+        selectedBananas = quantityBananas.val();
         subtotalBananas = calculateProdTotal(BANANA_PRICE, selectedBananas);
         updateProdTotal("#bananas", subtotalBananas);
         updateProdAvailability("#bananas", selectedBananas, availableBananas);
         updateTotals();
     })
-    $('#apples .qty').on('change', function() {
-        selectedApples =  $('#apples .qty').val();
+    quantityApples.on('change', function() {
+        selectedApples = quantityApples.val();
         subtotalApples = calculateProdTotal(APPLE_PRICE, selectedApples);
         updateProdTotal("#apples", subtotalApples);
         updateProdAvailability("#apples", selectedApples, availableApples);
         updateTotals();
     })
-    $('#oranges .qty').on('change', function() {
-        selectedOranges =  $('#oranges .qty').val();
+    quantityOranges.on('change', function() {
+        selectedOranges = quantityOranges.val();
         subtotalOranges = calculateProdTotal(ORANGE_PRICE, selectedOranges);
         updateProdTotal("#oranges", subtotalOranges);
         updateProdAvailability("#oranges", selectedOranges, availableOranges);
@@ -73,25 +83,28 @@ $(document).ready(function () {
 });
 
 function updateProdTotal(id, prodTotal) {
-    $(id+' > .prodTotal').text("$" + prodTotal.toFixed(2));
+    $(id + ' > .prodTotal').text("$" + prodTotal.toFixed(2));
 }
 
 function updateProdAvailabilityLabel(id, label, availability) {
-    $(id+' > .info > .stockStatus').text(label);
-    if (availability == LIMITED_SUPPLY) {
-        $(id+' > .info > .stockStatus').removeClass(AVAILABLE);
-        $(id+' > .info > .stockStatus').addClass(LIMITED_SUPPLY);
-        $(id+' > .info > .stockStatus').removeClass(OUT_OF_STOCK);
-    } else if (availability == OUT_OF_STOCK) {
-        $(id+' > .info > .stockStatus').removeClass(AVAILABLE);
-        $(id+' > .info > .stockStatus').removeClass(LIMITED_SUPPLY);
-        $(id+' > .info > .stockStatus').addClass(OUT_OF_STOCK);
-    } else if (availability == AVAILABLE) {
-        $(id+' > .info > .stockStatus').addClass(AVAILABLE);
-        $(id+' > .info > .stockStatus').removeClass(LIMITED_SUPPLY);
-        $(id+' > .info > .stockStatus').removeClass(OUT_OF_STOCK);
-    }
+    const stockStatus = $(id + ' > .info > .stockStatus');
+    stockStatus.text(label);
 
+    if (availability == LIMITED_SUPPLY) {
+        stockStatus.addClass(LIMITED_SUPPLY)
+                   .removeClass(AVAILABLE)
+                   .removeClass(OUT_OF_STOCK);
+
+    } else if (availability == OUT_OF_STOCK) {
+        stockStatus.addClass(OUT_OF_STOCK)
+                   .removeClass(AVAILABLE)
+                   .removeClass(LIMITED_SUPPLY);
+
+    } else if (availability == AVAILABLE) {
+        stockStatus.addClass(AVAILABLE)
+                   .removeClass(OUT_OF_STOCK)
+                   .removeClass(LIMITED_SUPPLY);
+    }
 }
 
 function updateTotals() {
