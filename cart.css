@@ -145,10 +145,10 @@ h3 {
   font-family: "Droid Serif", serif;  
 }
 
-.outofstock {
+.alert {
   color:red !important;
 }
-.limitedsupply {
+.warning {
   color:orange !important;
 }
 
