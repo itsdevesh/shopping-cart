@@ -26,9 +26,9 @@ var taxes = 0;
 var total = 0;
 
 
-// go ahead and get the most-accessed elements once and store them in a variable,
-// so we don't have to make jQuery search for the elements multiple times
-// otherwise this become extraordinarily unperformant
+// go ahead and identify our HTML elements once and store them each in a variable,
+// so we don't have to search ("query") for the elements multiple times, 
+// which can quickly slow down our code
 const priceTagBananasElement = document.querySelector('#bananas .prodPrice');
 const priceTagApplesElement = document.querySelector('#apples .prodPrice');
 const priceTagOrangesElement = document.querySelector('#oranges .prodPrice');
